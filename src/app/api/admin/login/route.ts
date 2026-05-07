@@ -1,5 +1,6 @@
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDatabase } from '@netlify/database';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,9 +14,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await db.user.findUnique({
-      where: { email },
-    });
+    const db = getDatabase();
+    const result = await db.sql`SELECT * FROM users WHERE email = ${email}`;
+    const user = result[0];
 
     if (!user) {
       return NextResponse.json(
@@ -40,7 +41,8 @@ export async function POST(request: NextRequest) {
         role: user.role,
       },
     });
-  } catch {
+  } catch (error) {
+    console.error('Login error:', error);
     return NextResponse.json(
       { error: 'Terjadi kesalahan server' },
       { status: 500 }
