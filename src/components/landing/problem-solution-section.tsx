@@ -9,7 +9,7 @@ import {
   PhoneOff,
   MapPinOff,
   CheckCircle2,
-  ArrowDown,
+  ArrowRight,
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -54,7 +54,7 @@ interface SectionSettings {
   solutionItems: string[]
 }
 
-export default function PromoProblemSection() {
+export default function ProblemSolutionSection() {
   const [settings, setSettings] = useState<SectionSettings>({
     problemTitle: 'Masalah Internet yang Anda Alami?',
     problemSubtitle: 'Apakah Anda mengalami salah satu dari masalah ini?',
@@ -86,14 +86,14 @@ export default function PromoProblemSection() {
       .catch(() => {})
   }, [])
 
-  const scrollToCta = () => {
-    document.querySelector('#cta')?.scrollIntoView({ behavior: 'smooth' })
+  const scrollToForm = () => {
+    document.querySelector('#lead-form')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <section id="masalah" className="py-16 sm:py-20 bg-muted/30">
+    <section id="masalah-solusi" className="py-16 sm:py-20 bg-muted/30">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Problem Section (Attention + Interest) */}
+        {/* Problem Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -102,13 +102,8 @@ export default function PromoProblemSection() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
-            {settings.problemTitle.split(' ').map((word, i) =>
-              word === 'Anda' || word === 'Alami?' || word === 'Alami' ? (
-                <span key={i} className="text-destructive"> {word}</span>
-              ) : (
-                <span key={i}> {word}</span>
-              )
-            )}
+            Masalah Internet yang{' '}
+            <span className="text-destructive">Anda Alami</span>?
           </h2>
           <p className="mt-3 text-muted-foreground text-lg">
             {settings.problemSubtitle}
@@ -134,18 +129,16 @@ export default function PromoProblemSection() {
                   <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0 group-hover:bg-destructive/20 transition-colors">
                     <Icon className="size-5 text-destructive" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground text-sm sm:text-base">
-                      {item}
-                    </h3>
-                  </div>
+                  <h3 className="font-semibold text-foreground text-sm sm:text-base pt-2">
+                    {item}
+                  </h3>
                 </div>
               </motion.div>
             )
           })}
         </motion.div>
 
-        {/* Solution Section (Desire) */}
+        {/* Solution Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -159,13 +152,7 @@ export default function PromoProblemSection() {
               SOLUSI
             </div>
             <h3 className="text-2xl sm:text-3xl font-bold text-foreground">
-              {settings.solutionTitle.split(' ').map((word, i) =>
-                word === 'Solusinya!' || word === 'Solusinya' ? (
-                  <span key={i} className="text-primary"> {word}</span>
-                ) : (
-                  <span key={i}> {word}</span>
-                )
-              )}
+              Kami <span className="text-primary">Solusinya</span>!
             </h3>
             <p className="mt-2 text-muted-foreground">
               {settings.solutionSubtitle}
@@ -193,11 +180,11 @@ export default function PromoProblemSection() {
           <div className="text-center">
             <Button
               size="lg"
-              className="bg-orange hover:bg-orange/90 text-orange-foreground font-bold h-12 px-8 rounded-xl"
-              onClick={scrollToCta}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 px-8 rounded-xl"
+              onClick={scrollToForm}
             >
-              <ArrowDown className="size-4 mr-2" />
-              Lihat Penawaran Kami
+              <ArrowRight className="size-4 mr-2" />
+              Cek Ketersediaan WiFi
             </Button>
           </div>
         </motion.div>

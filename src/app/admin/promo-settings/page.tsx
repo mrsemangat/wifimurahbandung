@@ -22,6 +22,9 @@ const defaultSettings: Record<string, string> = {
   promo_cta_title: 'Siap Pasang WiFi di Bandung?',
   promo_cta_subtitle: 'Konsultasi gratis, tanpa komitmen. Tim kami siap membantu Anda!',
   promo_cta_button_text: 'Chat WhatsApp Sekarang',
+  promo_solution_title: 'Kami Solusinya!',
+  promo_solution_subtitle: 'Tinggalkan semua masalah internet Anda pada kami',
+  promo_solution_items: 'Kami bantu pilih provider terbaik sesuai lokasi & budget\nKonsultasi GRATIS tanpa komitmen\nSurvey coverage area tanpa biaya\nPemasangan cepat oleh teknisi berpengalaman\nSupport after-sales yang responsif',
   promo_countdown_enabled: 'true',
   promo_countdown_text: 'Penawaran terbatas! Berakhir dalam:',
   promo_countdown_duration: '30',
@@ -143,6 +146,37 @@ export default function PromoSettingsPage() {
               value={settings.promo_problem_items || ''}
               onChange={e => updateSetting('promo_problem_items', e.target.value)}
               rows={6}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Solution Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Section Solusi</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Judul Solusi</Label>
+            <Input
+              value={settings.promo_solution_title || ''}
+              onChange={e => updateSetting('promo_solution_title', e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Subjudul Solusi</Label>
+            <Input
+              value={settings.promo_solution_subtitle || ''}
+              onChange={e => updateSetting('promo_solution_subtitle', e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Daftar Solusi (satu per baris)</Label>
+            <Textarea
+              value={settings.promo_solution_items || ''}
+              onChange={e => updateSetting('promo_solution_items', e.target.value)}
+              rows={5}
             />
           </div>
         </CardContent>

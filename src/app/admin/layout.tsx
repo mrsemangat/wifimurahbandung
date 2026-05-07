@@ -23,6 +23,7 @@ import {
   WifiIcon,
   Globe,
   LayoutTemplate,
+  UserCog,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
@@ -52,6 +53,7 @@ const navItems = [
   { href: '/admin/tracking', label: 'Tracking', icon: Code },
   { href: '/admin/promo-settings', label: 'LP Settings', icon: LayoutTemplate },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
+  { href: '/admin/users', label: 'Users', icon: UserCog },
 ];
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
@@ -68,16 +70,16 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
         </div>
       </div>
 
-      {/* View Website Button */}
+      {/* View LP Promo Button */}
       <div className="px-3 pt-3">
         <a
-          href="/"
+          href="/promo"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2.5 rounded-lg bg-green-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+          className="flex items-center gap-2.5 rounded-lg bg-orange-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-orange-700 transition-colors"
         >
-          <Globe className="h-4 w-4 shrink-0" />
-          Lihat Website
+          <LayoutTemplate className="h-4 w-4 shrink-0" />
+          Lihat LP Promo
         </a>
       </div>
 
@@ -107,13 +109,25 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
       </ScrollArea>
 
       {/* Footer */}
-      <div className="border-t border-blue-800 p-4">
-        <Link
+      <div className="border-t border-blue-800 p-3 space-y-1">
+        <a
           href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-blue-300 hover:bg-white/10 hover:text-white transition-colors"
+        >
+          <Globe className="h-4 w-4" />
+          Lihat Website
+        </a>
+        <Link
+          href="/admin/login"
+          onClick={() => {
+            if (onNavigate) onNavigate()
+          }}
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-blue-300 hover:bg-white/10 hover:text-white transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
-          Back to Website
+          Logout
         </Link>
       </div>
     </div>

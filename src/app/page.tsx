@@ -4,6 +4,7 @@ import Navbar from '@/components/landing/navbar'
 import HeroSection from '@/components/landing/hero-section'
 import CountdownTimer from '@/components/landing/countdown-timer'
 import TrustIndicators from '@/components/landing/trust-indicators'
+import ProblemSolutionSection from '@/components/landing/problem-solution-section'
 import KeunggulanSection from '@/components/landing/keunggulan-section'
 import ProviderSection from '@/components/landing/provider-section'
 import LeadFormSection from '@/components/landing/lead-form-section'
@@ -27,6 +28,7 @@ export default function Home() {
         <HeroSection />
         <CountdownTimer />
         <TrustIndicators />
+        <ProblemSolutionSection />
         <KeunggulanSection />
         <ProviderSection />
         <LeadFormSection />
