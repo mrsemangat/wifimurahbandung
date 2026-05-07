@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   Users,
@@ -27,6 +27,13 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/s
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+
+interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -99,7 +106,70 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const isLoginPage = pathname === '/admin/login';
+
+  useEffect(() => {
+    if (isLoginPage) {
+      setAuthLoading(false);
+      return;
+    }
+
+    try {
+      const stored = localStorage.getItem('admin_user');
+      if (stored) {
+        const user = JSON.parse(stored) as AdminUser;
+        setAdminUser(user);
+      } else {
+        router.replace('/admin/login');
+      }
+    } catch {
+      router.replace('/admin/login');
+    } finally {
+      setAuthLoading(false);
+    }
+  }, [isLoginPage, router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin_user');
+    setAdminUser(null);
+    router.replace('/admin/login');
+  };
+
+  // Login page renders without sidebar/auth
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  // Loading state while checking auth
+  if (authLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+          <p className="text-sm text-muted-foreground">Memuat...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Not authenticated — show redirect message briefly
+  if (!adminUser) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+          <p className="text-sm text-muted-foreground">Mengalihkan ke halaman login...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const userInitial = adminUser.name ? adminUser.name.charAt(0).toUpperCase() : 'A';
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
@@ -135,11 +205,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-2 text-sm">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">
-                A
+                {userInitial}
               </div>
-              <span className="font-medium">Admin</span>
+              <span className="font-medium">{adminUser.name}</span>
             </div>
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-destructive"
+              onClick={handleLogout}
+            >
               <LogOut className="h-4 w-4" />
               <span className="sr-only">Logout</span>
             </Button>

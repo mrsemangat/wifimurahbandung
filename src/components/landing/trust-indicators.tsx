@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Users, MapPin, Shield, Zap, MessageCircle } from 'lucide-react'
+import { Users, MapPin, Shield, Zap, MessageCircle, Clock, CheckCircle, Award } from 'lucide-react'
 
 const iconMap: Record<string, React.ElementType> = {
   Users,
@@ -10,31 +10,36 @@ const iconMap: Record<string, React.ElementType> = {
   Shield,
   Zap,
   MessageCircle,
+  Clock,
+  CheckCircle,
+  Award,
 }
 
 interface TrustIndicator {
   icon: string
-  value: string // from DB it's a string like "2500+", "99%", "100 Mbps", "24/7"
+  value: string
   label: string
 }
 
 const defaultIndicators: TrustIndicator[] = [
-  { icon: 'Users', value: '2500+', label: 'Pelanggan Aktif' },
-  { icon: 'MapPin', value: '25+', label: 'Area Coverage' },
-  { icon: 'Shield', value: '99%', label: 'Uptime Jaringan' },
-  { icon: 'Zap', value: '100 Mbps', label: 'Kecepatan Maksimal' },
-  { icon: 'MessageCircle', value: '24/7', label: 'Support Online' },
+  { icon: 'Users', value: '1000+', label: 'Pelanggan Terbantu' },
+  { icon: 'MapPin', value: 'Bandung Raya', label: 'Coverage Area' },
+  { icon: 'Shield', value: 'Terpercaya', label: 'Provider Resmi' },
+  { icon: 'Zap', value: 'Cepat', label: 'Respon Cepat' },
+  { icon: 'MessageCircle', value: 'Gratis', label: 'Konsultasi' },
 ]
 
-function parseValue(val: string): { num: number; suffix: string } {
-  // Extract leading number from strings like "2500+", "99%", "100 Mbps", "24/7"
-  const match = val.match(/^(\d+)/)
+function parseValue(val: string): { num: number | null; prefix: string; suffix: string } {
+  // Try to extract a leading number from strings like "1000+", "99%", "100 Mbps"
+  const match = val.match(/^(\d[\d,]*)/)
   if (match) {
-    const num = parseInt(match[1], 10)
+    const numStr = match[1].replace(/,/g, '')
+    const num = parseInt(numStr, 10)
     const suffix = val.slice(match[1].length)
-    return { num, suffix }
+    return { num, prefix: '', suffix }
   }
-  return { num: 0, suffix: val }
+  // No numeric value — return as plain text (no counter animation)
+  return { num: null, prefix: '', suffix: val }
 }
 
 function AnimatedCounter({ value }: { value: string }) {
@@ -57,7 +62,7 @@ function AnimatedCounter({ value }: { value: string }) {
   }, [])
 
   useEffect(() => {
-    if (!inView) return
+    if (!inView || num === null) return
     const duration = 2000
     const steps = 60
     const stepDuration = duration / steps
@@ -74,6 +79,15 @@ function AnimatedCounter({ value }: { value: string }) {
     }, stepDuration)
     return () => clearInterval(timer)
   }, [inView, num])
+
+  // Non-numeric values: just display as text without counter
+  if (num === null) {
+    return (
+      <div ref={ref} className="text-3xl sm:text-4xl font-bold text-primary">
+        {suffix}
+      </div>
+    )
+  }
 
   return (
     <div ref={ref} className="text-3xl sm:text-4xl font-bold text-primary">
