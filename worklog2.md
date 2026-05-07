@@ -1,28 +1,18 @@
-
 ---
-Task ID: 1
+Task ID: Netlify-Migration
 Agent: Main
-Task: Fix admin sidebar scrolling - bottom menu items not visible
+Task: Migrate project from SQLite to Netlify Database (PostgreSQL) for Netlify deployment
 
 Work Log:
-- Added min-h-0 class to the ScrollArea in admin layout to allow proper flex shrinking
+- Read Netlify Database documentation pages (overview, getting started, migrations, local development)
+- Discovered Prisma schema was empty (only generator/datasource, no models) - reconstructed from codebase
+- Recreated complete Prisma schema with PostgreSQL provider, all 14 models with proper types
+- Created SQL migration files in netlify/database/migrations/ for Netlify auto-migration
+- Updated netlify.toml, .env, .env.production, db.ts for Netlify compatibility
+- Validated Prisma schema and regenerated Prisma client
+- Tested Next.js build successfully
 
 Stage Summary:
-- Fixed: Admin sidebar now scrolls properly when menu items overflow the viewport
-- File modified: src/app/admin/layout.tsx
-
----
-Task ID: 2
-Agent: Main
-Task: Move countdown timer from top of LP to CTA area, make evergreen with admin-configurable duration
-
-Work Log:
-- Removed PromoCountdownTimer from top of promo page
-- Rewrote countdown-timer.tsx as evergreen countdown using sessionStorage
-- Integrated countdown timer into CTA section as urgency element
-- Added promo_countdown_duration setting to admin promo-settings page
-
-Stage Summary:
-- Countdown timer moved from top bar to inside CTA section
-- Evergreen: uses sessionStorage, configurable duration from admin
-- Files modified: countdown-timer.tsx, cta-section.tsx, promo/page.tsx, promo-settings/page.tsx
+- Project fully configured for Netlify deployment with Netlify Database (PostgreSQL)
+- 14 Prisma models defined, 2 SQL migration files created
+- Build passes with zero errors

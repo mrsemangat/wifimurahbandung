@@ -8,6 +8,13 @@ export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query'] : ['error'],
+    // For serverless environments (Netlify), limit connections to avoid
+    // "too many connections" errors with PostgreSQL
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
+    },
   })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
