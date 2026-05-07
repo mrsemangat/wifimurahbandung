@@ -21,6 +21,8 @@ import {
   LogOut,
   ChevronLeft,
   WifiIcon,
+  Globe,
+  LayoutTemplate,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
@@ -48,6 +50,7 @@ const navItems = [
   { href: '/admin/notifications', label: 'Notifications', icon: Bell },
   { href: '/admin/seo', label: 'SEO Settings', icon: Search },
   { href: '/admin/tracking', label: 'Tracking', icon: Code },
+  { href: '/admin/promo-settings', label: 'LP Settings', icon: LayoutTemplate },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -63,6 +66,19 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
           <span className="text-sm font-bold leading-tight">WIFI MURAH</span>
           <span className="text-xs text-blue-300 leading-tight">BANDUNG</span>
         </div>
+      </div>
+
+      {/* View Website Button */}
+      <div className="px-3 pt-3">
+        <a
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2.5 rounded-lg bg-green-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+        >
+          <Globe className="h-4 w-4 shrink-0" />
+          Lihat Website
+        </a>
       </div>
 
       {/* Navigation */}

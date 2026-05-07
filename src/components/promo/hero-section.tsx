@@ -1,9 +1,8 @@
 'use client'
 
-import { Check, MessageCircle, Users, MapPin, Shield } from 'lucide-react'
+import { Check, Users, MapPin, Shield, ArrowDown } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { getWaLink } from './wa-config'
 
 const sellingPoints = [
   { icon: Check, text: 'Banyak pilihan provider' },
@@ -18,9 +17,9 @@ const trustBadges = [
 ]
 
 export default function PromoHeroSection() {
-  const waLink = getWaLink(
-    'Halo, saya ingin konsultasi pemasangan WiFi murah di Bandung.'
-  )
+  const scrollToCta = () => {
+    document.querySelector('#cta')?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <section
@@ -31,8 +30,13 @@ export default function PromoHeroSection() {
       <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-primary/70" />
 
       {/* Decorative circles */}
-      <div className="absolute top-20 -left-20 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 -right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange rounded-full blur-3xl" />
+      </div>
+
+      {/* Hero BG overlay */}
+      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'url(/hero-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-24">
         <motion.div
@@ -73,7 +77,7 @@ export default function PromoHeroSection() {
           ))}
         </motion.div>
 
-        {/* CTA Button */}
+        {/* CTA Button - scrolls to CTA section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,14 +85,12 @@ export default function PromoHeroSection() {
           className="mt-10"
         >
           <Button
-            asChild
             size="lg"
-            className="bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-lg h-14 px-8 sm:h-16 sm:px-10 rounded-xl animate-wa-pulse shadow-lg shadow-green/30"
+            className="bg-orange hover:bg-orange/90 text-orange-foreground font-bold text-lg h-14 px-8 sm:h-16 sm:px-10 rounded-xl shadow-lg shadow-orange/30"
+            onClick={scrollToCta}
           >
-            <a href={waLink} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="size-6 mr-2" />
-              Chat WhatsApp Sekarang
-            </a>
+            <ArrowDown className="size-5 mr-2" />
+            Pasang WiFi Sekarang
           </Button>
         </motion.div>
 

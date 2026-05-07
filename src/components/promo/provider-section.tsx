@@ -1,9 +1,8 @@
 'use client'
 
-import { MessageCircle } from 'lucide-react'
+import { ArrowDown } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { getWaLink } from './wa-config'
 
 const providers = [
   {
@@ -59,9 +58,9 @@ const cardVariants = {
 }
 
 export default function PromoProviderSection() {
-  const waLink = getWaLink(
-    'Halo, saya ingin bertanya provider internet terbaik di lokasi saya.'
-  )
+  const scrollToCta = () => {
+    document.querySelector('#cta')?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <section id="provider" className="py-16 sm:py-20 bg-muted/30">
@@ -117,14 +116,12 @@ export default function PromoProviderSection() {
           className="text-center mt-10"
         >
           <Button
-            asChild
             size="lg"
             className="bg-orange hover:bg-orange/90 text-orange-foreground font-bold h-12 px-8 rounded-xl"
+            onClick={scrollToCta}
           >
-            <a href={waLink} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="size-5 mr-2" />
-              Tanyakan Provider Terbaik di Lokasi Anda
-            </a>
+            <ArrowDown className="size-5 mr-2" />
+            Lihat Penawaran Terbaik
           </Button>
         </motion.div>
       </div>

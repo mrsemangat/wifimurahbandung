@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Download, Eye, Edit2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Download, Eye, Edit2, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -54,6 +54,24 @@ const statusLabels: Record<string, string> = {
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
+
+  // Format WA number: remove leading 0, add 62 prefix
+  const formatWaNumber = (phone: string): string => {
+    let cleaned = phone.replace(/\D/g, '')
+    if (cleaned.startsWith('0')) {
+      cleaned = '62' + cleaned.slice(1)
+    }
+    if (!cleaned.startsWith('62')) {
+      cleaned = '62' + cleaned
+    }
+    return cleaned
+  }
+
+  const getFollowUpLink = (lead: Lead): string => {
+    const phone = formatWaNumber(lead.whatsapp)
+    const msg = encodeURIComponent(`Halo ${lead.name}, terima kasih sudah menghubungi Wifi Murah Bandung. Kami ingin membantu kebutuhan internet Anda.`)
+    return `https://wa.me/${phone}?text=${msg}`
+  }
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 20, total: 0, totalPages: 0 });
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -261,6 +279,16 @@ export default function LeadsPage() {
                           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(lead)}>
                             <Edit2 className="h-3.5 w-3.5" />
                           </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50"
+                            asChild
+                          >
+                            <a href={getFollowUpLink(lead)} target="_blank" rel="noopener noreferrer">
+                              <MessageCircle className="h-3.5 w-3.5" />
+                            </a>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -335,6 +363,15 @@ export default function LeadsPage() {
               <div className="text-muted-foreground text-xs">
                 Created: {new Date(viewLead.createdAt).toLocaleString('id-ID')}
               </div>
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700 text-white gap-2 mt-2"
+                asChild
+              >
+                <a href={getFollowUpLink(viewLead)} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="size-4" />
+                  Follow Up via WhatsApp
+                </a>
+              </Button>
             </div>
           )}
         </DialogContent>
@@ -377,11 +414,23 @@ export default function LeadsPage() {
                   placeholder="Add notes..."
                 />
               </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
-                <Button onClick={handleSaveEdit} disabled={saving}>
-                  {saving ? 'Saving...' : 'Save'}
+              <DialogFooter className="flex-col gap-2 sm:flex-row">
+                <Button
+                  variant="outline"
+                  className="gap-2 text-green-600 border-green-200 hover:bg-green-50"
+                  asChild
+                >
+                  <a href={getFollowUpLink(editLead)} target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="size-4" />
+                    Follow Up WA
+                  </a>
                 </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
+                  <Button onClick={handleSaveEdit} disabled={saving}>
+                    {saving ? 'Saving...' : 'Save'}
+                  </Button>
+                </div>
               </DialogFooter>
             </div>
           )}

@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Wifi, Menu, X } from 'lucide-react'
+import { Wifi, Menu, X, ArrowDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { getWaLink } from './wa-config'
 
 const navLinks = [
   { label: 'Beranda', href: '#hero' },
+  { label: 'Masalah', href: '#masalah' },
   { label: 'Keunggulan', href: '#keunggulan' },
   { label: 'Provider', href: '#provider' },
   { label: 'FAQ', href: '#faq' },
@@ -29,6 +29,11 @@ export default function PromoNavbar() {
     el?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const scrollToCta = () => {
+    setMobileOpen(false)
+    document.querySelector('#cta')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -48,15 +53,15 @@ export default function PromoNavbar() {
             }}
             className="flex items-center gap-2 group"
           >
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <Wifi className="size-5 text-white" />
+            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center overflow-hidden">
+              <img src="/logo-wifi.png" alt="Wifi Murah Bandung" className="size-5 object-contain" />
             </div>
             <span
               className={`font-bold text-lg transition-colors ${
                 scrolled ? 'text-foreground' : 'text-white'
               }`}
             >
-              Wifi Murah Bandung
+              Wifi Murah <span className="text-orange">Bandung</span>
             </span>
           </a>
 
@@ -80,16 +85,11 @@ export default function PromoNavbar() {
               </a>
             ))}
             <Button
-              asChild
-              className="ml-3 bg-green hover:bg-green/90 text-white font-semibold"
+              className="ml-3 bg-orange hover:bg-orange/90 text-orange-foreground font-semibold"
+              onClick={scrollToCta}
             >
-              <a
-                href={getWaLink('Halo, saya ingin bertanya tentang pemasangan WiFi.')}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Hubungi Kami
-              </a>
+              <ArrowDown className="size-4 mr-1" />
+              Pasang Sekarang
             </Button>
           </div>
 
@@ -133,16 +133,11 @@ export default function PromoNavbar() {
                 </a>
               ))}
               <Button
-                asChild
-                className="w-full mt-2 bg-green hover:bg-green/90 text-white font-semibold h-12"
+                className="w-full mt-2 bg-orange hover:bg-orange/90 text-orange-foreground font-semibold h-12"
+                onClick={scrollToCta}
               >
-                <a
-                  href={getWaLink('Halo, saya ingin bertanya tentang pemasangan WiFi.')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Hubungi Kami via WhatsApp
-                </a>
+                <ArrowDown className="size-4 mr-2" />
+                Pasang Sekarang
               </Button>
             </div>
           </motion.div>

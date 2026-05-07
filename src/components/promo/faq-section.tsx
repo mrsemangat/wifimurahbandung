@@ -7,7 +7,6 @@ import {
   AccordionContent,
 } from '@/components/ui/accordion'
 import { motion } from 'framer-motion'
-import { getWaLink } from './wa-config'
 
 const faqs = [
   {
@@ -36,6 +35,10 @@ const faqs = [
       'Ya, kami juga menyediakan paket bisnis khusus untuk kantor, toko, kafe, dan usaha lainnya dengan kecepatan dan layanan prioritas.',
   },
 ]
+
+function scrollToCta() {
+  document.querySelector('#cta')?.scrollIntoView({ behavior: 'smooth' })
+}
 
 export default function PromoFaqSection() {
   return (
@@ -70,16 +73,12 @@ export default function PromoFaqSection() {
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
                   {faq.answer}
-                  <a
-                    href={getWaLink(
-                      `Halo, saya ingin bertanya tentang: ${faq.question}`
-                    )}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-2 text-primary font-medium hover:underline"
+                  <button
+                    onClick={scrollToCta}
+                    className="inline-block mt-2 text-primary font-medium hover:underline cursor-pointer"
                   >
                     Hubungi kami untuk info lebih lanjut →
-                  </a>
+                  </button>
                 </AccordionContent>
               </AccordionItem>
             ))}
