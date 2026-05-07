@@ -3,21 +3,18 @@
   publish = ".next"
 
 [build.environment]
-  NODE_ENV = "production"
-  # Prisma needs to know we're using PostgreSQL
-  PRISMA_ENGINES_MIRROR = "https://prisma-builds.prisma-data.net/"
+  NPM_FLAGS = "--production=false"
+  PRISMA_CLIENT_ENGINE_TYPE = "library"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Redirect www to non-www
 [[redirects]]
   from = "https://www.wifimurahbandung.web.id/*"
   to = "https://wifimurahbandung.web.id/:splat"
   status = 301
   force = true
 
-# Security headers
 [[headers]]
   for = "/*"
   [headers.values]
@@ -26,7 +23,6 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-# Cache static assets
 [[headers]]
   for = "/_next/static/*"
   [headers.values]
