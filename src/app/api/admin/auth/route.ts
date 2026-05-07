@@ -1,5 +1,6 @@
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDatabase } from '@netlify/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,15 +16,9 @@ export async function GET(request: NextRequest) {
     const token = authHeader.replace('Bearer ', '');
     const userId = Buffer.from(token, 'base64').toString('utf-8');
 
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-      },
-    });
+    const db = getDatabase();
+    const result = await db.sql`SELECT id, email, name, role FROM users WHERE id = ${userId}`;
+    const user = result[0];
 
     if (!user) {
       return NextResponse.json(
@@ -33,7 +28,8 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({ user });
-  } catch {
+  } catch (error) {
+    console.error('Auth error:', error);
     return NextResponse.json(
       { error: 'Tidak terautentikasi' },
       { status: 401 }
