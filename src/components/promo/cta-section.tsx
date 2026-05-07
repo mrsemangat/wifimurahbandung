@@ -4,6 +4,7 @@ import { MessageCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { getWaLink } from './wa-config'
+import PromoCountdownTimer from './countdown-timer'
 
 export default function PromoCtaSection() {
   const waLink = getWaLink(
@@ -42,11 +43,22 @@ export default function PromoCtaSection() {
           Tim kami siap membantu Anda!
         </motion.p>
 
+        {/* Countdown Timer - Urgency Element */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="mt-8"
+        >
+          <PromoCountdownTimer />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.5, delay: 0.25 }}
           className="mt-8"
         >
           <Button

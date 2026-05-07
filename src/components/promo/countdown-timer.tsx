@@ -2,21 +2,38 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Clock } from 'lucide-react'
 
 interface CountdownSettings {
   enabled: boolean
   text: string
+  durationMinutes: number
 }
 
 const defaultSettings: CountdownSettings = {
   enabled: true,
-  text: '🔥 Promo pemasangan bulan ini berakhir dalam:',
+  text: 'Penawaran terbatas! Berakhir dalam:',
+  durationMinutes: 30,
 }
 
-function calculateTimeLeft() {
-  const now = new Date()
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59)
-  const diff = endOfMonth.getTime() - now.getTime()
+// Evergreen: store end time in sessionStorage so it persists during the session
+function getEndTime(durationMinutes: number): number {
+  const STORAGE_KEY = 'promo_countdown_end'
+  const stored = sessionStorage.getItem(STORAGE_KEY)
+
+  if (stored) {
+    const end = parseInt(stored, 10)
+    if (end > Date.now()) return end
+  }
+
+  // Set new end time
+  const end = Date.now() + durationMinutes * 60 * 1000
+  sessionStorage.setItem(STORAGE_KEY, end.toString())
+  return end
+}
+
+function calculateTimeLeft(endTime: number) {
+  const diff = endTime - Date.now()
 
   if (diff <= 0) {
     return { days: 0, hours: 0, minutes: 0, seconds: 0 }
@@ -32,38 +49,47 @@ function calculateTimeLeft() {
 
 export default function PromoCountdownTimer() {
   const [settings, setSettings] = useState<CountdownSettings | null>(null)
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft)
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+  const [endTime, setEndTime] = useState<number | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
-    fetch('/api/settings')
+    fetch('/api/admin/promo-settings')
       .then((r) => r.json())
       .then((data) => {
-        if (data?.countdown_enabled === 'true' || data?.countdownEnabled === 'true') {
-          setSettings({
-            enabled: true,
-            text: data.countdown_text || data.countdownText || defaultSettings.text,
-          })
-        } else {
-          setSettings(defaultSettings)
+        const enabled = data?.promo_countdown_enabled !== 'false'
+        const duration = parseInt(data?.promo_countdown_duration || '30', 10)
+        const newSettings: CountdownSettings = {
+          enabled,
+          text: data?.promo_countdown_text || defaultSettings.text,
+          durationMinutes: duration > 0 ? duration : defaultSettings.durationMinutes,
         }
+        setSettings(newSettings)
+        const end = getEndTime(newSettings.durationMinutes)
+        setEndTime(end)
+        setTimeLeft(calculateTimeLeft(end))
       })
       .catch(() => {
         setSettings(defaultSettings)
+        const end = getEndTime(defaultSettings.durationMinutes)
+        setEndTime(end)
+        setTimeLeft(calculateTimeLeft(end))
       })
   }, [])
 
   const tick = useCallback(() => {
-    setTimeLeft(calculateTimeLeft())
-  }, [])
+    if (endTime) {
+      setTimeLeft(calculateTimeLeft(endTime))
+    }
+  }, [endTime])
 
   useEffect(() => {
-    if (!settings?.enabled) return
+    if (!settings?.enabled || !endTime) return
     timerRef.current = setInterval(tick, 1000)
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [settings, tick])
+  }, [settings, endTime, tick])
 
   if (!settings?.enabled) return null
 
@@ -77,32 +103,37 @@ export default function PromoCountdownTimer() {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-orange to-orange/90 text-orange-foreground py-3"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-5 sm:p-6"
       >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-            <span className="text-sm sm:text-base font-medium">
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Clock className="size-5 text-orange" />
+            <span className="text-sm sm:text-base font-semibold text-white/90">
               {settings.text}
             </span>
-            <div className="flex items-center gap-2">
-              {blocks.map((block, idx) => (
-                <div key={block.label} className="flex items-center gap-2">
-                  <div className="bg-white/20 rounded-md px-2.5 py-1 min-w-[48px] text-center">
-                    <div className="text-lg font-bold leading-tight">
+          </div>
+
+          <div className="flex items-center justify-center gap-2 sm:gap-3">
+            {blocks.map((block, idx) => (
+              <div key={block.label} className="flex items-center gap-2 sm:gap-3">
+                <div className="flex flex-col items-center">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-lg w-14 sm:w-16 h-14 sm:h-16 flex items-center justify-center border border-white/10">
+                    <span className="text-2xl sm:text-3xl font-bold text-white tabular-nums">
                       {String(block.value).padStart(2, '0')}
-                    </div>
-                    <div className="text-[10px] opacity-80 uppercase tracking-wider">
-                      {block.label}
-                    </div>
+                    </span>
                   </div>
-                  {idx < blocks.length - 1 && (
-                    <span className="text-xl font-bold">:</span>
-                  )}
+                  <span className="text-[10px] sm:text-xs text-white/60 mt-1.5 uppercase tracking-wider font-medium">
+                    {block.label}
+                  </span>
                 </div>
-              ))}
-            </div>
+                {idx < blocks.length - 1 && (
+                  <span className="text-xl sm:text-2xl font-bold text-white/50 -mt-5">:</span>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </motion.div>

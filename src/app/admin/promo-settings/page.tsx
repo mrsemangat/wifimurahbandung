@@ -23,7 +23,8 @@ const defaultSettings: Record<string, string> = {
   promo_cta_subtitle: 'Konsultasi gratis, tanpa komitmen. Tim kami siap membantu Anda!',
   promo_cta_button_text: 'Chat WhatsApp Sekarang',
   promo_countdown_enabled: 'true',
-  promo_countdown_text: '🔥 Promo pemasangan bulan ini berakhir dalam:',
+  promo_countdown_text: 'Penawaran terbatas! Berakhir dalam:',
+  promo_countdown_duration: '30',
 }
 
 export default function PromoSettingsPage() {
@@ -180,15 +181,31 @@ export default function PromoSettingsPage() {
       {/* Countdown */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Countdown Timer</CardTitle>
+          <CardTitle className="text-lg">Countdown Timer (Evergreen)</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Countdown timer bertipe evergreen — setiap pengunjung baru akan melihat hitungan mundur dari awal sesuai durasi yang ditentukan. Timer ditampilkan di area CTA sebagai elemen urgensi.
+          </p>
           <div className="flex items-center gap-3">
             <Switch
               checked={settings.promo_countdown_enabled === 'true'}
               onCheckedChange={checked => updateSetting('promo_countdown_enabled', checked ? 'true' : 'false')}
             />
             <Label>Tampilkan countdown timer</Label>
+          </div>
+          <div className="space-y-2">
+            <Label>Durasi Countdown (menit)</Label>
+            <Input
+              type="number"
+              min="1"
+              max="1440"
+              value={settings.promo_countdown_duration || '30'}
+              onChange={e => updateSetting('promo_countdown_duration', e.target.value)}
+            />
+            <p className="text-xs text-muted-foreground">
+              Durasi hitungan mundur dalam menit (1-1440). Setelah waktu habis, timer akan otomatis reset untuk pengunjung baru.
+            </p>
           </div>
           <div className="space-y-2">
             <Label>Teks Countdown</Label>

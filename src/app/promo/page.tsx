@@ -1,7 +1,6 @@
 'use client'
 
 import PromoNavbar from '@/components/promo/navbar'
-import PromoCountdownTimer from '@/components/promo/countdown-timer'
 import PromoHeroSection from '@/components/promo/hero-section'
 import PromoProblemSection from '@/components/promo/problem-section'
 import PromoProviderSection from '@/components/promo/provider-section'
@@ -19,7 +18,6 @@ export default function PromoPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <PromoNavbar />
-      <PromoCountdownTimer />
       <main className="flex-1">
         <PromoHeroSection />
         <PromoProblemSection />
